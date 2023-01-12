@@ -18,7 +18,8 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Posts::all();
+        // $posts = Posts::all();
+        $posts = Posts::join('users','posts.user_id','=','users.id')->get(['posts.*','users.name']);
         
         return response()->json([
             'status' => true,

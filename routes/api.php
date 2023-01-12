@@ -19,12 +19,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('me',[AuthController::class,'me']);
-    Route::get('posts',[PostsController::class,'index']);
     Route::post('createPost',[PostsController::class,'store']);
 });
 
 Route::post('register',[AuthController::class,'register']);
 Route::post('login',[AuthController::class,'login']);
+
+
+Route::get('posts',[PostsController::class,'index']);
 
 // Route::apiResource('/users',UserController::class);
 
