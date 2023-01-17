@@ -19,8 +19,8 @@ class PostsController extends Controller
     public function index()
     {
         // $posts = Posts::all();
-        $posts = Posts::join('users','posts.user_id','=','users.id')->get(['posts.*','users.name']);
-        
+        $posts = Posts::join('users', 'posts.user_id', '=', 'users.id')->get(['posts.*', 'users.name']);
+
         return response()->json([
             'status' => true,
             'posts' => $posts
@@ -45,38 +45,44 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = Validator::make($request->all(), [
-            'post_img' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-        ]);
+        // $validate = Validator::make($request->all(), [
+        //     'post_img' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        // ]);
+        if ($request->hasFile('post_img')) {
 
-        if ($validate->fails()) {
-            return response()->json([
-                'errors' => $validate->errors()
+            $validate = Validator::make($request->all(), [
+                'post_img' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             ]);
+
+            if ($validate->fails()) {
+                return response()->json([
+                    'errors' => $validate->errors()
+                ]);
+            }
+
+            $userId = auth('sanctum')->user()->id;
+
+            $uploadFolder = 'uploads/' . $userId;
+
+            $image = $request->file('post_img');
+            $imageUploadPath = $image->store($uploadFolder, 'public');
+            // $uploadedImageResponse = array(
+            //     "image_name" => basename($imageUploadPath),
+            //     "image_url" => Storage::disk('public')->url($imageUploadPath),
+            //     "mime" => $image->getClientMimeType()
+            // );
+
+            $post = Posts::create([
+                'user_id' => auth('sanctum')->user()->id,
+                'post_img' => 'storage/' . $imageUploadPath,
+                'post_desc' => $request->post_desc
+            ]);
+
+            return response()->json([
+                'message' => 'Post Created Successfully',
+                'post' => $post,
+            ], 200);
         }
-
-        $userId = auth('sanctum')->user()->id;
-
-        $uploadFolder = 'uploads/'.$userId;
-
-        $image = $request->file('post_img');
-        $imageUploadPath = $image->store($uploadFolder,'public');
-        // $uploadedImageResponse = array(
-        //     "image_name" => basename($imageUploadPath),
-        //     "image_url" => Storage::disk('public')->url($imageUploadPath),
-        //     "mime" => $image->getClientMimeType()
-        // );
-
-        $post = Posts::create([
-            'user_id' => auth('sanctum')->user()->id,
-            'post_img' => 'storage/'.$imageUploadPath,
-            'post_desc' => $request->post_desc
-        ]);
-
-        return response()->json([
-            'message' => 'Post Created Successfully',
-            'post' => $post,
-        ], 200);
     }
 
     /**
