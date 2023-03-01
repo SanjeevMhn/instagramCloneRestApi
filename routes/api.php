@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PostsController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,8 +22,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('posts',[PostsController::class,'index']);
     Route::get('me',[AuthController::class,'me']);
     Route::post('createPost',[PostsController::class,'store']);
+
+    // Route::get('user/{id}',function(){return 'Hello';});
 });
 
+Route::get('user',[UserController::class,'index']);
+Route::get('user/{id}',[UserController::class,'show']);
 Route::post('register',[AuthController::class,'register']);
 Route::post('login',[AuthController::class,'login']);
 

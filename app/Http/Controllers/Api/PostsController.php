@@ -19,7 +19,7 @@ class PostsController extends Controller
     public function index()
     {
         // $posts = Posts::all();
-        $posts = Posts::join('users', 'posts.user_id', '=', 'users.id')->orderBy('posts.updated_at','desc')->get(['posts.*', 'users.name']);
+        $posts = Posts::join('users', 'posts.user_id', '=', 'users.id')->orderBy('posts.updated_at','desc')->get(['posts.*', 'users.*']);
 
         return response()->json([
             'status' => true,

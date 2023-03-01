@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Models\Posts;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -50,7 +52,22 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+      
+        $user = User::find($id);
+
+        if(!$user){
+            return response()->json([
+                'error' => 'User not found'
+            ],404);
+        }
+
+        $posts = Posts::where('posts.user_id', '=', $id)->get(); 
+
+        return response()->json([
+            'status' => true,
+            'user' => $user,
+            'posts' => $posts
+        ]);
     }
 
     /**
