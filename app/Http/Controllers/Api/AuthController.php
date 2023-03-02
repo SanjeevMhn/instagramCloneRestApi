@@ -64,7 +64,7 @@ class AuthController extends Controller
     public function me(Request $request){
 
         $userId = auth('sanctum')->user()->id;
-        $posts = Posts::where('user_id',$userId)->get();
+        $posts = Posts::where('user_id',$userId)->orderBy('posts.updated_at','desc')->get();
 
         return response()->json([
             'data' => $request->user(),
