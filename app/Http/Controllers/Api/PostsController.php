@@ -16,10 +16,11 @@ class PostsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // $posts = Posts::all();
-        $posts = Posts::join('users', 'posts.user_id', '=', 'users.id')->orderBy('posts.updated_at','desc')->get(['posts.*', 'users.*']);
+        $perPage = $request->input('per_page') ?? 5;
+        $posts = Posts::join('users', 'posts.user_id', '=', 'users.id')->orderBy('posts.updated_at','desc')->paginate($perPage);
 
         return response()->json([
             'status' => true,
