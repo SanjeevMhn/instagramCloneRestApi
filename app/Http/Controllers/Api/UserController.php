@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Posts;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -41,7 +42,35 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($request->hasFile('profile_img')){
+            $validate = Validator::make($request->all(), [
+                'profile_img' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            ]);
+
+            if($validate->fails()){
+                return response()->json([
+                    'errors' => $validate->errors()
+                ]);
+            }
+
+            $userId = auth('sanctum')->user()->id;
+
+            $uploadFolder = 'profilePic/' . $userId;
+
+            $image = $request->file('profile_img');
+            $imageUploadPath = $image->store($uploadFolder,'public');
+
+            $updatedUser = User::find($userId);
+            $updatedUser->profile_img = 'storage/' . $imageUploadPath;
+            $updatedUser->update();
+
+            return response()->json([
+                'message' => 'Profile picture updated successfully',
+                'user' => $updatedUser,
+            ], 200);
+
+        }
+
     }
 
     /**

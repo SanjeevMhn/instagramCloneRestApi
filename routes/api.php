@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('posts',[PostsController::class,'index']);
     Route::get('me',[AuthController::class,'me']);
     Route::post('createPost',[PostsController::class,'store']);
+    Route::post('uploadProfilePic',[UserController::class,'store']);
 
     // Route::get('user/{id}',function(){return 'Hello';});
 });
