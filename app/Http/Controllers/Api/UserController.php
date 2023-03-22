@@ -90,7 +90,7 @@ class UserController extends Controller
             ],404);
         }
 
-        $posts = Posts::where('posts.user_id', '=', $id)->get(); 
+        $posts = Posts::where('posts.user_id', '=', $id)->orderBy('posts.updated_at','desc')->get(); 
 
         return response()->json([
             'status' => true,
