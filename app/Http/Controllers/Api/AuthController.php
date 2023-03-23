@@ -68,7 +68,7 @@ class AuthController extends Controller
         $posts = Posts::where('user_id',$userId)->orderBy('posts.updated_at','desc')->get();
 
         return response()->json([
-            'data' => $request->user(),
+            'user' => $request->user(),
             'uploads' => $posts
         ]);
 
